@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Shopify AI Commerce Command Center portfolio demo" />
+  <title>Commerce Command · Shopify Intelligence Workspace</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="shell-header">
+    <a class="brand" href="#" data-view="pulse" aria-label="Commerce Command home">
+      <span class="brand-glyph">C</span>
+      <span><b>Commerce Command</b><small>Shopify intelligence workspace</small></span>
+    </a>
+    <nav class="nav-rail" aria-label="Workspace">
+      <button class="nav-tab active" data-view="pulse">Pulse</button>
+      <button class="nav-tab" data-view="sales">Sales</button>
+      <button class="nav-tab" data-view="orders">Order Ops</button>
+      <button class="nav-tab" data-view="inventory">Inventory</button>
+      <button class="nav-tab" data-view="customers">Customers</button>
+      <button class="nav-tab" data-view="ai">AI Brief</button>
+      <button class="nav-tab" data-view="data">Data</button>
+    </nav>
+    <div class="header-actions">
+      <span class="connection-pill" id="connectionPill"><i></i> Demo store</span>
+      <button class="quiet-action" id="syncBtn">Sync</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section id="pulseView" class="view active">
+      <div class="page-intro pulse-intro">
+        <div>
+          <span class="overline">OWNER VIEW · LIVE BUSINESS PULSE</span>
+          <h1>Know what changed.<br><em>Know what to do next.</em></h1>
+          <p>One decision layer for Shopify sales, customer behavior, inventory risk and fulfillment operations.</p>
+        </div>
+        <div class="period-control" aria-label="Reporting period">
+          <span>Reporting window</span>
+          <div><button data-days="7">7D</button><button class="active" data-days="30">30D</button><button data-days="90">90D</button></div>
+        </div>
+      </div>
+
+      <section class="metric-ribbon">
+        <article class="headline-metric"><span>Net sales</span><strong id="mSales">$0</strong><small id="mSalesGrowth">—</small></article>
+        <article class="headline-metric"><span>Orders</span><strong id="mOrders">0</strong><small id="mOrderGrowth">—</small></article>
+        <article class="headline-metric"><span>Average order</span><strong id="mAov">$0</strong><small>Selected period</small></article>
+        <article class="headline-metric"><span>Repeat customers</span><strong id="mRepeat">0%</strong><small>Lifetime stored base</small></article>
+        <article class="headline-metric alert-metric"><span>Needs attention</span><strong id="mAttention">0</strong><small>Stock + fulfillment</small></article>
+      </section>
+
+      <div class="pulse-grid">
+        <article class="paper-card sales-story">
+          <div class="card-heading"><div><span class="overline">SALES MOMENTUM</span><h2>Revenue trend</h2></div><button class="text-link" data-go="sales">Explore sales →</button></div>
+          <div class="chart-stage"><svg id="salesChart" viewBox="0 0 760 260" role="img" aria-label="Sales trend"></svg></div>
+          <div id="chartCaption" class="chart-caption"></div>
+        </article>
+
+        <aside class="paper-card action-stack">
+          <div class="card-heading"><div><span class="overline">ACTION QUEUE</span><h2>What needs attention</h2></div><span id="alertCount" class="count-chip">0</span></div>
+          <div id="alertList" class="alert-list"></div>
+          <button class="full-link" data-go="inventory">Open operations view</button>
+        </aside>
+      </div>
+
+      <div class="lower-grid">
+        <article class="paper-card products-card">
+          <div class="card-heading"><div><span class="overline">PRODUCT ECONOMICS</span><h2>What is driving revenue</h2></div><button class="text-link" data-go="inventory">Inventory health →</button></div>
+          <div id="topProducts" class="product-ledger"></div>
+        </article>
+        <article class="paper-card channels-card">
+          <div class="card-heading"><div><span class="overline">CHANNEL MIX</span><h2>Where orders originate</h2></div></div>
+          <div id="channelMix" class="channel-mix"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="salesView" class="view">
+      <div class="section-title"><div><span class="overline">SALES EXPLORER</span><h1>Performance without spreadsheet archaeology.</h1><p>Track daily demand, product contribution and channel mix from the same store dataset.</p></div></div>
+      <div class="sales-layout">
+        <article class="paper-card big-chart-card"><div class="card-heading"><div><span class="overline">DAILY SALES</span><h2 id="salesPeriodTitle">Last 30 days</h2></div></div><div class="chart-stage large"><svg id="salesChartLarge" viewBox="0 0 980 330"></svg></div></article>
+        <article class="paper-card ranking-card"><div class="card-heading"><div><span class="overline">TOP PRODUCTS</span><h2>Revenue leaders</h2></div></div><div id="salesProductRanking"></div></article>
+      </div>
+      <article class="paper-card"><div class="card-heading"><div><span class="overline">CHANNEL ECONOMICS</span><h2>Sales distribution</h2></div></div><div id="salesChannelTable" class="data-wrap"></div></article>
+    </section>
+
+    <section id="ordersView" class="view">
+      <div class="section-title row"><div><span class="overline">ORDER OPERATIONS</span><h1>See exceptions before customers feel them.</h1><p>Paid, pending and fulfillment states with aging signals in one operational queue.</p></div><div class="mini-stat"><span>Unfulfilled</span><b id="orderUnfulfilled">0</b></div></div>
+      <article class="paper-card flush"><div class="table-toolbar"><div class="search-box">⌕ <input id="orderSearch" placeholder="Search order or customer…"></div><select id="orderFilter"><option value="">All fulfillment states</option><option value="UNFULFILLED">Unfulfilled</option><option value="PARTIALLY_FULFILLED">Partially fulfilled</option><option value="FULFILLED">Fulfilled</option></select></div><div id="ordersTable" class="data-wrap"></div><div id="ordersPager" class="pager"></div></article>
+    </section>
+
+    <section id="inventoryView" class="view">
+      <div class="section-title"><div><span class="overline">INVENTORY CONTROL</span><h1>Stock health tied to actual sales velocity.</h1><p>Days of cover, reorder thresholds and missing-data states stay separate so unknown never looks healthy.</p></div></div>
+      <div id="inventorySummary" class="inventory-summary"></div>
+      <article class="paper-card flush"><div id="inventoryTable" class="data-wrap"></div></article>
+    </section>
+
+    <section id="customersView" class="view">
+      <div class="section-title"><div><span class="overline">CUSTOMER ECONOMICS</span><h1>Turn order history into usable segments.</h1><p>VIP, loyal, repeat, new and at-risk groups are computed from stored order behavior—not guessed by AI.</p></div></div>
+      <div id="segmentCards" class="segment-cards"></div>
+      <article class="paper-card flush"><div class="table-toolbar"><div class="search-box">⌕ <input id="customerSearch" placeholder="Search customer…"></div><select id="segmentFilter"><option value="">All segments</option><option>VIP</option><option>LOYAL</option><option>REPEAT</option><option>NEW</option><option>AT_RISK</option><option>DORMANT</option></select></div><div id="customersTable" class="data-wrap"></div><div id="customersPager" class="pager"></div></article>
+    </section>
+
+    <section id="aiView" class="view">
+      <div class="ai-hero">
+        <div><span class="overline light">AI ADVISORY · GROUNDED IN CALCULATED METRICS</span><h1>A business brief that cannot invent the numbers.</h1><p>The AI layer receives a controlled metric payload. In demo mode the same evidence-first logic runs locally without an API key.</p></div><button class="ai-refresh" id="refreshInsights">Refresh brief ↻</button>
+      </div>
+      <div class="ai-layout">
+        <section id="insightList" class="insight-list"></section>
+        <aside class="evidence-card"><span class="overline">EVIDENCE PACK</span><h2>Numbers sent to the advisor</h2><div id="evidencePack"></div><p class="evidence-note">No customer message, raw order note, or invented benchmark is required to create this brief.</p></aside>
+      </div>
+    </section>
+
+    <section id="dataView" class="view">
+      <div class="section-title row"><div><span class="overline">DATA & INTEGRATION</span><h1>Trust the dashboard because you can inspect the pipeline.</h1><p>Connection state, quality issues, sync history and integration boundaries remain visible to the operator.</p></div><button class="primary-dark" id="testConnection">Test Shopify connection</button></div>
+      <div class="data-grid">
+        <article class="paper-card quality-card"><div class="card-heading"><div><span class="overline">DATA QUALITY</span><h2>Readiness score</h2></div><strong id="qualityScore">0%</strong></div><div id="qualityIssues" class="quality-list"></div></article>
+        <article class="paper-card connector-card"><span class="overline">SHOPIFY CONNECTOR</span><h2 id="connectorTitle">Demo snapshot</h2><p id="connectorCopy">Use the built-in commerce dataset now, or add your own Shopify Admin API credentials in .env.</p><div class="connector-flow"><span>Shopify</span><i>→</i><span>GraphQL</span><i>→</i><span>Metric Engine</span><i>→</i><span>Workspace</span></div><button class="secondary-action" id="liveSyncBtn">Run live snapshot sync</button></article>
+      </div>
+      <article class="paper-card"><div class="card-heading"><div><span class="overline">SYNC HISTORY</span><h2>Recent pipeline runs</h2></div></div><div id="syncHistory" class="data-wrap"></div></article>
+    </section>
+  </main>
+
+  <dialog id="orderDialog" class="order-dialog"><div id="orderDetail"></div></dialog>
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
